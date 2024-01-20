@@ -1,4 +1,8 @@
-<%= simple_form_for storefront, data: { controller: 'nested-form', nested_form_index_value: 'NEW_RECORD' } do |form| %>
+<%= simple_form_for storefront,
+  data: {
+    controller: 'nested-form reorderable-items',
+    nested_form_index_value: 'NEW_RECORD',
+  } do |form| %>
   <% if storefront.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(storefront.errors.count, "error") %> prohibited this storefront from being saved:</h2>
@@ -14,30 +18,47 @@
   <div>
     <div
       class="return-reason-container"
-    >
+      data-controller="draggable-list-items"
+      data-action="
+       dragstart->draggable-list-items#dragStart
+       dragover->draggable-list-items#dragOver
+       dragenter->draggable-list-items#dragEnter
+       drop->draggable-list-items#dragDrop
+       dragend->draggable-list-items#dragEnd
+       dragend->reorderable-items#reindexOutputs
+      "
+     >
       <template hidden data-nested-form-target="template">
         <%= form.simple_fields_for :reasons, Reason.new, child_index: 'NEW_RECORD' do |reason_fields| %>
           <%= render 'reason', f: reason_fields %>
         <% end %>
       </template>
 
-      <button type="button" data-action="nested-form#addAssociation" class="btn">
-        <i class="add-icon"></i> Add Return Reason
+      <button type="button" data-action="nested-form#addAssociation" class="btn flex gap-6 justify-left bg-transparent text-[#3164F6]">
+        <%= image_tag "add-icon.svg", class: "w-[22px] h-[22px]" %>
+        <span>Add Return Reason</span>
       </button>
-      <%= form.simple_fields_for :reasons, @storefront.reasons.ordered do |reason_fields| %>
-        <%= render 'reason', f: reason_fields %>
-      <% end %>
+
+      <ul>
+        <%= form.simple_fields_for :reasons, @storefront.reasons.ordered do |reason_fields| %>
+          <%= render 'reason', f: reason_fields %>
+        <% end %>
+
+        <template data-draggable-list-items-target="placeholder">
+          <li class="outline-dashed w-full h-16"></li>
+        </template>
+      </ul>
 
       <div hidden data-nested-form-target="addItem"></div>
     </div>
   </div>
 
-  <div>
-    <div>
+  <div class="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-2xl shadow-[#323247] flex flex-row justify-between items-center">
+    <div class="font-medium">
       Remember to save your changes before leaving this page
     </div>
     <div>
-      <%= form.submit 'Save', class: 'btn-primary' %>
+      <%= form.submit 'Save', class: 'rounded py-3.5 px-6 bg-[#FFC933] text-black' %>
     </div>
   </div>
 <% end %>

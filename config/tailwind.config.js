@@ -12,6 +12,10 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
+      backgroundImage: {
+        eye: "url('assets/eye.svg')",
+        "eye-off": "url('assets/eye-off.svg')",
+      }
     },
   },
   plugins: [

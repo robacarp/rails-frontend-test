@@ -1,29 +1,104 @@
-<div class="nested-form-wrapper">
-  <div class="dashboard-form-fields">
-    <%=
-      f.input :label,
-        label: 'Displayed reason',
-        required: true,
-        placeholder: 'Enter Displayed reason...',
-        hint: "Provide a friendly description for the reason that will be displayed to the customer."
-    %>
-    <%=
-      f.input :code,
-        label: 'Internal return code',
-        required: true,
-        placeholder: 'Enter Internal return code...',
-        hint: "For internal use only. Must be unique. To aid in analytics, we do not recommend changing the code once set."
-    %>
-    <%= f.input :active,
-      label: 'Reason is visible to customers'
-    %>
-    <%= f.input :ordering,
-      label: 'Ordering',
-      placeholder: 'Enter Ordering...',
-      hint: "The order in which the reason will be displayed to the customer. Reasons with lower numbers will be displayed first."
+<li
+  draggable="true"
+  class="nested-form-wrapper"
+  data-controller="modal"
+  data-action="keydown.esc@document->modal#hide"
+  data-dragitem-drop="true"
+  id="<%= dom_id(f.object) %>"
+>
+  <div class="flex flex-row justify-between gap-6 p-4">
+    <a href="#" draggable=false><%= image_tag "more-vertical.svg", class: "w-[22px] h-[22px]" %></a>
+
+    <% if f.object.active %>
+      <%= image_tag "eye.svg", class: "w-[22px] h-[22px]", draggable: false %>
+    <% else %>
+      <%= image_tag "eye-off.svg", class: "w-[22px] h-[22px]", draggable: false %>
+    <% end %>
+
+    <span class="flex-1"><%= f.object.label %></span>
+    <a href="#" class="font-semibold text-blue-500" data-action="modal#show" draggable=false>Edit</a>
+
+    <%= f.hidden_field :ordering, data: { "reorderable-items-target": "indexOutput" } %>
+
+  </div>
+
+  <div class="dashboard-form-fields hidden absolute top-0 left-0 w-full h-full flex justify-center items-center" data-modal-target="modal">
+    <div class="bg-white p-8 rounded-2xl z-10 flex flex-col gap-6 w-[720px]">
+      <div class="flex justify-between">
+        <h2 class="text-2xl font-bold">Edit Return Reason</h2>
+        <a href="#" class="font-semibold text-[1.5rem]" data-action="modal#hide">&times;</a>
+      </div>
+
+      <hr>
+
+      <%=
+        f.input :label,
+          label: 'Displayed reason',
+          required: true,
+          placeholder: 'Enter Displayed reason...',
+          hint: "Provide a friendly description for the reason that will be displayed to the customer.",
+          label_html: { class: 'font-semibold' },
+          hint_html: { class: 'text-xs' },
+          input_html: { class: 'bg-[#F8F8FB] border-[#E3E3E3] border rounded-xl px-4 py-2' },
+          wrapper_html: { class: 'flex flex-col gap-2' }
+      %>
+
+      <%=
+        f.input :code,
+          label: 'Internal return code',
+          required: true,
+          placeholder: 'Enter Internal return code...',
+          hint: "For internal use only. Must be unique. To aid in analytics, we do not recommend changing the code once set.",
+          label_html: { class: 'font-semibold' },
+          hint_html: { class: 'text-xs' },
+          input_html: { class: 'bg-[#F8F8FB] border-[#E3E3E3] border rounded-xl px-4 py-2' },
+          wrapper_html: { class: 'flex flex-col gap-2' }
     %>
 
-    <button type="button" class="btn-danger" data-action="nested-form#removeAssociation">Remove</button>
+    <%= f.input :active,
+      input_html: {
+        class: %|
+          w-6 h-6
+          bg-eye checked:bg-eye-off bg-transparent bg-center bg-no-repeat
+          border-0 focus:ring-0 text-transparent appearance-none
+        |,
+        data: { checkbox_label_target: "input" }
+      },
+      label: "Show Reason to Customers",
+      hint: "When hidden, this return reason is not offered as an option to the customers. Click on the eye icon to make the return reason visible.",
+      label_html: {
+        class: "font-semibold pb-2 text-base",
+        data: { checkbox_label_target: "label" }
+      },
+      hint_html: { class: "text-sm" },
+      wrapper_html: {
+        class: "flex gap-2 items-start",
+        data: {
+          controller: "checkbox-label",
+          checkbox_label_checked_value: "Return Reason is Hidden",
+          checkbox_label_unchecked_value: "Reason is Visible to Customers"
+        }
+      }
+    %>
+
     <%= f.hidden_field :_destroy %>
+    <div class="flex justify-between gap-4">
+      <button type="button"
+              class="
+                border-red-500 border-2 rounded-xl 
+                px-6 py-3 text-red-500
+              "
+              data-action="nested-form#removeAssociation"
+      >
+        Delete
+      </button>
+
+      <a href="#"
+         data-action="modal#hide"
+         class="bg-[#FFC933] border-[#FFC933] border-2 rounded-xl px-6 py-3 text-black"
+       >
+       Continue
+      </a>
+    </div>
   </div>
-</div>
+</li>

@@ -9,21 +9,15 @@ export default class extends Controller {
     e.preventDefault();
 
     this.modalTarget.open = true
-    document.querySelector('.desktop-overlay').style.zIndex = 0
-    this.modalTarget.querySelectorAll('x-transition').forEach((transition) => {
-      transition.open = true
-    })
+    document.querySelector('.desktop-overlay').classList.remove('hidden')
+    this.modalTarget.classList.remove('hidden')
   }
 
   hide(e) {
     e.preventDefault()
 
-    this.modalTarget.querySelectorAll('x-transition').forEach((transition) => {
-      transition.open = false
-    })
-    this.modalTarget.open = false
-
-    document.querySelector('.desktop-overlay').style.zIndex = 1
+    this.modalTarget.classList.add('hidden')
+    document.querySelector('.desktop-overlay').classList.add('hidden')
     this.dispatch('closed')
   }
 }
